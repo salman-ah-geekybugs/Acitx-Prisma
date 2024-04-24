@@ -50,11 +50,12 @@ async fn main() -> std::io::Result<()> {
     let client = web::Data::new(prisma_service);
     info!("Prisma client connected successfully");
 
-    let prisma_client = client.clone();
-    actix_rt::spawn(async move {
+    // let prisma_client = client.clone();
+    // //start the cron service on another thread
+    // actix_rt::spawn(async move {
 
-        utils::scheduler::start_test_cron(&prisma_client).await;
-    });
+    //     utils::scheduler::start_test_cron(&prisma_client).await;
+    // });
 
     HttpServer::new(move || {
         let cors = Cors::default()

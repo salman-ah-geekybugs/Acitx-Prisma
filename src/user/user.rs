@@ -5,11 +5,12 @@ use serde::{Deserialize, Serialize};
 use serde_json::json;
 use validator::Validate;
 
+
 #[derive(Deserialize, Serialize, Debug, Validate)]
 struct LoginDto {
     #[validate(email)]
     pub email: String,
-    #[validate(length(min = 1))]
+    #[validate(length(min = 4, message="Password must have minimum length of 4"))]
     pub password: String,
 }
 
@@ -31,6 +32,17 @@ struct SignUpDto {
 
 #[post("/api/auth/login")]
 async fn login(body: web::Json<LoginDto>, client: web::Data<PrismaClient>) -> impl Responder {
+
+    let validation_result = body.validate();
+    match validation_result {
+        Ok(_) => {
+            println!("request is valid");
+        },
+        Err(e) =>{
+            return HttpResponse::BadRequest().json(e);
+        }
+    }
+
     let user_found = client
         .user()
         .find_first(vec![crate::prisma::user::email::equals(body.email.clone())])

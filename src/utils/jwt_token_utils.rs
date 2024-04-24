@@ -18,7 +18,6 @@ pub async fn verify_token(
     token_data: TokenData<UserToken>,
     client: &web::Data<PrismaClient>,
 ) -> Result<String, String> {
-    println!("{:?}", token_data);
     let email = token_data.claims.email;
     let existing_user = client
         .user()
